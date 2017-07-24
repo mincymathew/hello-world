@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <cstring>
+#include <boost/tokenizer.hpp>
+
+using namespace std;
+using namespace boost;
+
+class Node {  
+    int count;
+    unordered_map<string,Node*> children;  
+public:
+    string name;
+    Node (string name) {
+            this->name = name;
+            this->count = 0;
+    }  
+    Node* addChild (string name) {
+        Node* child = new Node(name);
+        this->children.insert({name,child});
+        return child;
+    }  
+    Node* find_among_children(string name){
+        unordered_map<std::string,Node*>::const_iterator got;
+        got = this->children.find(name);
+        if (got== this->children.end()) {
+            return NULL;
+        } else {
+            return (got->second);
+        }
+    }
+};
+
+struct Comparator
+{
+    bool
+    operator()(const Node & obj1, const Node & obj2) const
+    {
+        if (obj1.name == obj2.name)
+          return true;
+        return false;
+    }
+};
+
+struct Hash {
+    size_t 
+    operator ()(const Node &node) const
+    {
+    return hash<string>()(node.name);
+    }
+};
+
+
+vector <string> list_str={
+            "/Electronics/Computers/Graphics Cards",
+            "/Electronics/Computers/Graphics Cards", 
+            "/Electronics/Computers/SSDs", 
+            "/Electronics/Computers/Graphics Cards", 
+            "/Electronics/Computers/SSDs",
+            "/Electronics/TVs", 
+            "/Electronics/Computers/Graphics Cards", 
+            "/Electronics/TVs", 
+            "/Electronics/TVs", 
+            "/Garden", 
+            "/Automotive/Parts" };
+
+int main() {
+
+    char_separator<char> sep("/");
+    Node root_node("root");
+    Node *curr, *temp;
+    
+    curr = &root_node;
+    for(std::vector<string>::iterator it = list_str.begin(); it != list_str.end(); ++it) {
+        //Parse the input
+        tokenizer<char_separator<char>> tokens(*it, sep);
+        for (const auto& t : tokens) {
+            //find among children of root. if yes, advance token and find among children of that node
+            temp = curr->find_among_children(t);
+            if(temp == NULL){
+                cout << "Child does not exist, Adding " << t << endl;
+                curr = curr->addChild(t); 
+            } else {
+                cout << "Child " << t<< " already exists"<<endl;
+                curr = temp;
+            }
+        }
+        curr = &root_node;
+    }
+
+    return 0;
+}
