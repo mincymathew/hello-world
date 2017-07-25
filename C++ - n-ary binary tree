@@ -31,6 +31,12 @@ public:
             return (got->second);
         }
     }
+    void increment_count() {
+        this->count++;
+    }
+    int get_count() {
+        return(this->count);
+    }
 };
 
 struct Comparator
@@ -71,24 +77,53 @@ int main() {
     char_separator<char> sep("/");
     Node root_node("root");
     Node *curr, *temp;
+    string path;
+    int count = 0;
     
     curr = &root_node;
     for(std::vector<string>::iterator it = list_str.begin(); it != list_str.end(); ++it) {
         //Parse the input
         tokenizer<char_separator<char>> tokens(*it, sep);
+        root_node.increment_count();
         for (const auto& t : tokens) {
             //find among children of root. if yes, advance token and find among children of that node
             temp = curr->find_among_children(t);
             if(temp == NULL){
-                cout << "Child does not exist, Adding " << t << endl;
-                curr = curr->addChild(t); 
+                //cout << "Child does not exist, Adding " << t << endl;
+                curr = curr->addChild(t);
+                curr->increment_count();
             } else {
-                cout << "Child " << t<< " already exists"<<endl;
+                temp->increment_count();
+                //cout << "Child " << t<< " already exists"<<endl;
                 curr = temp;
             }
         }
         curr = &root_node;
     }
-
+    cout<<"Which node are you interested in?"<<endl;
+    cin >>  path;
+    //Traverse tree
+    if(path == "/") {
+       count = root_node.get_count();
+       cout << "In root node"<<endl;
+    } else {
+        curr = &root_node;
+        
+        //Parse the input
+        tokenizer<char_separator<char>> tokens(path, sep);
+        for (const auto& t : tokens) {
+            //find among children of root. if yes, advance token and find among children of that node
+            temp = curr->find_among_children(t);
+            if(temp == NULL){
+                count = 0;
+                break;
+            } else {
+                curr = temp;
+                count = temp->get_count();
+            }
+        }
+        curr = &root_node;
+    }
+    cout<< count << endl;
     return 0;
 }
