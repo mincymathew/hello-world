@@ -1,0 +1,57 @@
+/******************************************************************************
+
+                            Online C Compiler.
+                Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <stdio.h>
+#include <string.h>
+
+char *reverse(char *str, char delim)
+{
+  char *end = strchr(str, delim);
+  char *ret;
+  char tmp;
+
+  if (end == NULL)
+    end = strchr(str, '\0');
+
+  ret = end + 1;
+  end--;
+
+  while (end > str)
+  {
+    tmp = *str;
+    *str = *end;
+    *end = tmp;
+
+    end--;
+    str++;
+  }
+
+  return ret;
+}
+
+int main()
+{
+  char string[100];
+  int i =0;
+  char* str = string;
+  
+  fgets(string,100,stdin);
+  while(string[i]!='\n') {
+      i++;
+  }
+  string[i] = '\0';
+  char *end = strchr(str, '\0');
+
+  while (str < end)
+    str = reverse(str, ' ');
+
+  reverse(string, '\0');
+  printf("%s\n", string);
+
+  return 0;
+}
