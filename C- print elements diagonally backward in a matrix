@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int m = 4;
+int n = 4;
+
+void
+print_diag(int a[3][4], int row, int col)
+{
+    printf("\n");
+    for (int i=row, j=col; i<m && j>=0; i++,j-- ) {
+        printf("%d \t",a[i][j]);
+    }
+}
+
+int main()
+{
+    int a[4][4] = { {1, 2, 3, 4},
+                    {5, 6, 7, 8},
+                    {9,10,11,12},
+                    {13,14,15,16}
+    };
+    int i =0,j=0;
+    for (j=0;j<n;j++) {
+        print_diag(a,i,j);
+    }
+    for (i=1, j =n-1;i<m;i++) {
+        print_diag(a,i,j);
+    }
+    return 0;
+}
